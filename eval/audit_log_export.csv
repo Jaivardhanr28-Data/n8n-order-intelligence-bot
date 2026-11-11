@@ -1,0 +1,80 @@
+id,created_at,session_id,question,blocked,block_reason,sql_used,tool_calls,answer,status
+1,2026-11-09 07:15:42.946038+00,3f519549ef8840cab1d5acbcb5771703,Which courier had the most late deliveries?,false,ok,"SELECT d.courier, COUNT(*) AS late_count FROM deliveries d WHERE d.delivery_status = 'Delayed' OR d.delivered_date > d.expected_date GROUP BY d.courier ORDER BY late_count DESC LIMIT 1",1,"BlueDart had the most late deliveries with 2 late deliveries.
+
+SQL used:
+```sql
+SELECT d.courier, COUNT(*) AS late_count FROM deliveries d WHERE d.delivery_status = 'Delayed' OR d.delivered_date > d.expected_date GROUP BY d.courier ORDER BY late_count DESC LIMIT 1
+```",answered
+2,2026-11-09 07:58:36.206801+00,4fb87cb5283c4b78b2f675e31a697a92,What is our total net revenue?,false,ok,"SELECT TO_CHAR(SUM(amount_inr), 'FM99,99,99,999') AS net_revenue FROM orders WHERE order_status NOT IN ('Cancelled', 'Returned');",1,"Our total net revenue is ₹1,69,222.
+
+SQL used:
+```sql
+SELECT TO_CHAR(SUM(amount_inr), 'FM99,99,99,999') AS net_revenue FROM orders WHERE order_status NOT IN ('Cancelled', 'Returned');
+```",answered
+3,2026-11-09 07:58:57.698591+00,4fb87cb5283c4b78b2f675e31a697a92,Which product category earns the most net revenue?,false,ok,"SELECT category, TO_CHAR(SUM(amount_inr), 'FM99,99,99,999') AS net_revenue FROM orders WHERE order_status NOT IN ('Cancelled', 'Returned') GROUP BY category ORDER BY SUM(amount_inr) DESC LIMIT 1;",1,"Electronics earns the most net revenue, with a total of ₹88,792.
+
+SQL used:
+```sql
+SELECT category, TO_CHAR(SUM(amount_inr), 'FM99,99,99,999') AS net_revenue FROM orders WHERE order_status NOT IN ('Cancelled', 'Returned') GROUP BY category ORDER BY SUM(amount_inr) DESC LIMIT 1;
+```",answered
+4,2026-11-09 07:59:03.000267+00,4fb87cb5283c4b78b2f675e31a697a92,Which courier had the most late deliveries?,false,ok,"SELECT d.courier, COUNT(*) AS late_deliveries FROM deliveries d JOIN orders o ON d.order_id = o.order_id WHERE o.order_status NOT IN ('Cancelled', 'Returned') AND (d.delivery_status = 'Delayed' OR d.delivered_date > d.expected_date) GROUP BY d.courier ORDER BY late_deliveries DESC LIMIT 1;",1,"BlueDart had the most late deliveries, with a total of 2 late deliveries.
+
+SQL used:
+```sql
+SELECT d.courier, COUNT(*) AS late_deliveries FROM deliveries d JOIN orders o ON d.order_id = o.order_id WHERE o.order_status NOT IN ('Cancelled', '
+Returned') AND (d.delivery_status = 'Delayed' OR d.delivered_date > d.expected_date) GROUP BY d.courier ORDER BY late_deliveries DESC LIMIT 1;
+```",answered
+5,2026-11-09 07:59:09.341119+00,4fb87cb5283c4b78b2f675e31a697a92,Compare net revenue from Premium vs Regular customers.,false,ok,"SELECT c.segment, TO_CHAR(SUM(o.amount_inr), 'FM99,99,99,999') AS net_revenue FROM orders o JOIN customers c ON o.customer_id = c.customer_id WHERE o.order_status NOT IN ('Cancelled', 'Returned') AND c.segment IN ('Premium', 'Regular') GROUP BY c.segment ORDER BY SUM(o.amount_inr) DESC;",1,"Premium customers generated ₹1,03,892 in net revenue, while Regular customers generated ₹61,080.
+
+SQL used:
+```sql
+SELECT c.segment, TO_CHAR(SUM(o.amount_inr), 'FM99,99,99,999') AS net_revenue FROM orders o JOIN customers c ON o.customer_id = c.customer_id WHERE o.order_status NOT IN ('Cancelled', 'Returned') AND c.segment IN ('Premium', 'Regular') GROUP BY c.segment ORDER BY SUM(o.amount_inr) DESC;
+```",answered
+6,2026-11-09 07:59:14.48113+00,4fb87cb5283c4b78b2f675e31a697a92,Which order has no delivery record?,false,ok,SELECT o.order_id FROM orders o LEFT JOIN deliveries d ON o.order_id = d.order_id WHERE d.delivery_id IS NULL;,1,"Order ORD-1020 has no delivery record.
+
+SQL used:
+```sql
+SELECT o.order_id FROM orders o LEFT JOIN deliveries d ON o.order_id = d.order_id WHERE d.delivery_id IS NULL;
+```",answered
+7,2026-11-09 07:59:21.143771+00,4fb87cb5283c4b78b2f675e31a697a92,What was our net revenue in October 2026?,false,ok,"SELECT TO_CHAR(SUM(amount_inr), 'FM99,99,99,999') AS net_revenue FROM orders WHERE order_status NOT IN ('Cancelled', 'Returned') AND order_date >= '2026-10-01' AND order_date <= '2026-10-31';",1,"Our net revenue in October 2026 was ₹94,792.
+
+SQL used:
+```sql
+SELECT TO_CHAR(SUM(amount_inr), 'FM99,99,99,999') AS net_revenue FROM orders WHERE order_status NOT IN ('Cancelled', 'Returned') AND order_date >= '2026-10-01' AND order_date <= '2026-10-31';
+```",answered
+8,2026-11-09 07:59:27.373062+00,4fb87cb5283c4b78b2f675e31a697a92,What is our average order value?,false,ok,"SELECT TO_CHAR(ROUND(SUM(amount_inr) / COUNT(order_id), 2), 'FM99,99,99,999.00') AS aov FROM orders WHERE order_status NOT IN ('Cancelled', 'Returned');",1,"Our average order value is ₹9,401.22.
+
+SQL used:
+```sql
+SELECT TO_CHAR(ROUND(SUM(amount_inr) / COUNT(order_id), 2), 'FM99,99,99,999.00') AS aov FROM orders WHERE order_status NOT IN ('Cancelled', 'Returned');
+```",answered
+9,2026-11-09 07:59:34.325871+00,4fb87cb5283c4b78b2f675e31a697a92,Who are our top 3 customers by net revenue?,false,ok,"SELECT c.name, TO_CHAR(SUM(o.amount_inr), 'FM99,99,99,999') AS net_revenue FROM customers c JOIN orders o ON c.customer_id = o.customer_id WHERE o.order_status NOT IN ('Cancelled', 'Returned') GROUP BY c.customer_id, c.name ORDER BY SUM(o.amount_inr) DESC LIMIT 3;",1,"Our top 3 customers by net revenue are Rohan Gupta (₹43,498), Divya Pillai (₹31,799), and Aarav Mehta
+ (₹18,498).
+
+SQL used:
+```sql
+SELECT c.name, TO_CHAR(SUM(o.amount_inr), 'FM99,99,99,999') AS net_revenue FROM customers c JOIN orders o ON c.customer_id = o.customer_id WHERE o.order_status NOT IN ('Cancelled', 'Returned') GROUP BY c.customer_id, c.name ORDER BY SUM(o.amount_inr) DESC LIMIT 3;
+```",answered
+10,2026-11-09 07:59:38.667861+00,4fb87cb5283c4b78b2f675e31a697a92,Which payment method is used most often?,false,ok,"SELECT payment_method, COUNT(*) AS order_count FROM orders GROUP BY payment_method ORDER BY order_count DESC LIMIT 1;",1,"The most frequently used payment method is UPI, with 8 orders.
+
+SQL used:
+```sql
+SELECT payment_method, COUNT(*) AS order_count FROM orders GROUP BY payment_method ORDER BY order_count DESC LIMIT 1;
+```",answered
+11,2026-11-09 08:03:19.88202+00,93f2d34b90ca45749a4bb11bc74f8070,Which payment method is used most often?,false,ok,"SELECT payment_method, COUNT(*) AS order_count FROM orders GROUP BY payment_method ORDER BY order_count DESC LIMIT 5",1,"UPI and Credit Card are used most often, each with 8 orders.
+
+SQL used:
+```sql
+SELECT payment_method, COUNT(*) AS order_count FROM orders GROUP BY payment_method ORDER BY order_count DESC LIMIT 5
+```",answered
+12,2026-11-09 10:32:14.007534+00,5ddb953d5ff547898bbc0656d599ce39,Which payment method is used most often?,false,ok,"SELECT payment_method, COUNT(*) AS order_count FROM orders GROUP BY payment_method ORDER BY order_count DESC LIMIT 5",1,"There is a tie for the payment method used most often, with UPI and Credit Card both being used 8 times each.
+
+* UPI: 8 orders
+* Credit Card: 8 orders
+* Cash on Delivery: 2 orders
+* Debit Card: 2 orders
+
+SQL used:
+```sql
+SELECT payment_method, COUNT(*) AS order_count FROM orders GROUP BY payment_method ORDER BY order_count DESC LIMIT 5
+```",answered
